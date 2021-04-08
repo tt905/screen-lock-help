@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MUIButton">
+        <attr name="mui_button_radius" format="dimension" />
+        <attr name="mui_start_color" format="color" />
+        <attr name="mui_end_color" format="color" />
+        <attr name="mui_stroke_color" format="color" />
+
+    </declare-styleable>
+</resources>
