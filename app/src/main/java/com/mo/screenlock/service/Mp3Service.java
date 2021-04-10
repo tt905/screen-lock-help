@@ -21,8 +21,6 @@ import com.mo.screenlock.MainActivity;
 import com.mo.screenlock.R;
 import com.mo.screenlock.receiver.VolumeReceiver;
 
-import java.io.IOException;
-
 /**
  * @author : beta mtw905@gmail.com
  * @date : 2021/4/8-16:52
@@ -46,14 +44,14 @@ public class Mp3Service extends Service {
 
         mMediaPlayer = new MediaPlayer();
 //        mMediaPlayer = MediaPlayer.create(this, R.raw.wusheng); 这种方式创建不行
-        try {
-            mMediaPlayer.reset();
-            mMediaPlayer.setLooping(true);
-            mMediaPlayer.setDataSource(path);
-            mMediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mMediaPlayer.reset();
+//            mMediaPlayer.setLooping(true);
+//            mMediaPlayer.setDataSource(path);
+//            mMediaPlayer.prepare();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         // 获取服务通知
         Notification notification = createForegroundNotification();
@@ -72,7 +70,7 @@ public class Mp3Service extends Service {
         serviceIsLive = true;
         receiver = new VolumeReceiver();
         receiver.init(this);
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
     @Override
@@ -84,6 +82,7 @@ public class Mp3Service extends Service {
         }
         stopForeground(true);
         unregisterReceiver(receiver);
+        serviceIsLive = false;
     }
 
     /**
@@ -138,10 +137,10 @@ public class Mp3Service extends Service {
          * 播放音乐
          */
         public void playMusic() {
-            if (!mMediaPlayer.isPlaying()) {
-                //如果还没开始播放，就开始
-                mMediaPlayer.start();
-            }
+//            if (!mMediaPlayer.isPlaying()) {
+//                //如果还没开始播放，就开始
+//                mMediaPlayer.start();
+//            }
         }
     }
 }
