@@ -106,8 +106,8 @@ public class Mp3Service extends Service {
 //            notificationChannel.enableLights(true);
 //            notificationChannel.setLightColor(Color.RED);
             //震动
-            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
-            notificationChannel.enableVibration(true);
+//            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+//            notificationChannel.enableVibration(true);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(notificationChannel);
             }

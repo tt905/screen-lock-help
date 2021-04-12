@@ -13,7 +13,6 @@ import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.mo.screenlock.databinding.ActivityMainBinding
 import com.mo.screenlock.receiver.AdminActivateReceiver
 import com.mo.screenlock.service.Mp3Service
@@ -30,8 +29,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mForegroundIntent: Intent
     private lateinit var mBinder: Mp3Service.MyBinder
 
-    private var mSimpleExoPlayer: SimpleExoPlayer? = null
-
     private lateinit var mMediaPlayer: MediaPlayer
     private var isPrepare = false
 
@@ -39,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
-        mSimpleExoPlayer = SimpleExoPlayer.Builder(this).build()
         mReceiver = ComponentName(this, AdminActivateReceiver::class.java)
 
         setPlayer()
@@ -48,25 +44,18 @@ class MainActivity : AppCompatActivity() {
         startMp3Service()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        Log.d("onNewIntent", "is me too")
+    }
+
     private fun setPlayer() {
-//        val defaultDataSourceFactory =
-//            DefaultDataSourceFactory(this, "audio/mpeg") //  userAgent -> audio/mpeg  不能为空
-//        val concatenatingMediaSource = ConcatenatingMediaSource() //创建一个媒体连接源
-//        val mediaSource1 =
-//            ProgressiveMediaSource.Factory(defaultDataSourceFactory).createMediaSource(
-//
-//            ) //创建一个播放数据源
-//        concatenatingMediaSource.addMediaSource(mediaSource1)
-//        mSimpleExoPlayer?.playWhenReady = true
-//        mSimpleExoPlayer?.prepare(concatenatingMediaSource)
-
-//        val mediaItem =
-//            MediaItem.fromUri(Uri.parse("android:resource://" + packageName + "/" + R.raw.wusheng))
-//        mSimpleExoPlayer?.setMediaItem(mediaItem)
-//        mSimpleExoPlayer?.prepare()
-
         mMediaPlayer = MediaPlayer.create(this, R.raw.wusheng)
-        mMediaPlayer.isLooping = true
+        mMediaPlayer.setOnCompletionListener {
+            Log.d("onCompletion", "duration: ${mMediaPlayer.currentPosition}")
+            mMediaPlayer.start()
+        }
+//        mMediaPlayer.isLooping = true
     }
 
 
@@ -83,8 +72,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             buttonStart.setOnClickListener {
-//                mBinder.playMusic()
-//                mSimpleExoPlayer?.play()
                 mMediaPlayer.start()
             }
         }
