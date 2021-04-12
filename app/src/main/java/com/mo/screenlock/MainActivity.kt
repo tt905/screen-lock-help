@@ -9,7 +9,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
-import android.view.KeyEvent
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -24,30 +23,34 @@ import com.mo.screenlock.utils.VibrateUtils
  */
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var mBinding: ActivityMainBinding
+    private lateinit var mLayoutBinding: ActivityMainBinding
     private lateinit var mReceiver: ComponentName
     private lateinit var mForegroundIntent: Intent
     private lateinit var mBinder: Mp3Service.MyBinder
 
     private lateinit var mMediaPlayer: MediaPlayer
-    private var isPrepare = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(mBinding.root)
+        mLayoutBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mLayoutBinding.root)
         mReceiver = ComponentName(this, AdminActivateReceiver::class.java)
 
         setPlayer()
         iniView()
-
         startMp3Service()
+
+        mLayoutBinding.root.postDelayed({
+            mMediaPlayer.start()
+            Toast.makeText(this@MainActivity, "锁屏帮助已启动", Toast.LENGTH_SHORT).show()
+        }, 2000);
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         Log.d("onNewIntent", "is me too")
     }
+
 
     private fun setPlayer() {
         mMediaPlayer = MediaPlayer.create(this, R.raw.wusheng)
@@ -60,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun iniView() {
-        with(mBinding) {
+        with(mLayoutBinding) {
             buttonLock.setOnClickListener {
                 if (!PowerUtils.isAdminActive(mReceiver)) {
                     Toast.makeText(this@MainActivity, "请先开启设备管理", Toast.LENGTH_SHORT).show()
@@ -103,11 +106,15 @@ class MainActivity : AppCompatActivity() {
             .setTitle("确定退出吗?")
             .setPositiveButton("确定") { dialog, which ->
                 stopMp3Service()
-                mMediaPlayer.release()
                 super.onBackPressed()
             }
             .setNegativeButton("取消", null)
             .create().show()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mMediaPlayer.release()
     }
 
     private fun stopMp3Service() {
@@ -125,15 +132,15 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, 0)
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        when (keyCode) {
-            KeyEvent.KEYCODE_VOLUME_DOWN -> {
-                Log.i("MainActivity", "volume down")
-                PowerUtils.wakeUpAndUnlock()
-                return false
-            }
-        }
-        return super.onKeyDown(keyCode, event)
-    }
+//    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+//        when (keyCode) {
+//            KeyEvent.KEYCODE_VOLUME_DOWN -> {
+//                Log.i("MainActivity", "volume down")
+//                PowerUtils.wakeUpAndUnlock()
+//                return false
+//            }
+//        }
+//        return super.onKeyDown(keyCode, event)
+//    }
 
 }

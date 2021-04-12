@@ -10,9 +10,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.IBinder;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -38,21 +36,7 @@ public class Mp3Service extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        String path = Environment.getExternalStorageDirectory() + "/Sounds/wusheng.mp3";
-        Log.d("path ", path);
-
-        mMediaPlayer = new MediaPlayer();
-//        mMediaPlayer = MediaPlayer.create(this, R.raw.wusheng); 这种方式创建不行
-//        try {
-//            mMediaPlayer.reset();
-//            mMediaPlayer.setLooping(true);
-//            mMediaPlayer.setDataSource(path);
-//            mMediaPlayer.prepare();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
+//        mMediaPlayer = MediaPlayer.create(this, R.raw.wusheng);
         // 获取服务通知
         Notification notification = createForegroundNotification();
         //将服务置于启动状态 ,NOTIFICATION_ID指的是创建的通知的ID
@@ -70,6 +54,8 @@ public class Mp3Service extends Service {
         serviceIsLive = true;
         receiver = new VolumeReceiver();
         receiver.init(this);
+
+
         return START_STICKY;
     }
 
